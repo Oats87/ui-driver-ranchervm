@@ -46,26 +46,20 @@ export default Ember.Component.extend(NodeDriver, {
     let config = get(this, 'globalStore').createRecord({
       type: '%%DRIVERNAME%%Config',
       cpuCount: 2,
-      memorySize: 2048,
+      memoryMib: 2048,
+      sshUser: "ubuntu",
+      image: "rancher/vm-ubuntu:16.04.4-server-amd64"
     });
 
     set(this, 'model.%%DRIVERNAME%%Config', config);
   },
 
-  // Add custom validation beyond what can be done from the config API schema
   validate() {
     // Get generic API validation errors
     this._super();
     var errors = get(this, 'errors')||[];
     if ( !get(this, 'model.name') ) {
       errors.push('Name is required');
-    }
-
-    // Add more specific errors
-
-    // Check something and add an error entry if it fails:
-    if ( parseInt(get(this, 'config.memorySize'), defaultRadix) < defaultBase ) {
-      errors.push('Memory Size must be at least 1024 MB');
     }
 
     // Set the array of errors for display,
@@ -78,6 +72,4 @@ export default Ember.Component.extend(NodeDriver, {
       return true;
     }
   },
-
-  // Any computed properties or custom logic can go here
 });

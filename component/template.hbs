@@ -1,36 +1,94 @@
 <section class="horizontal-form">
   {{#accordion-list showExpandAll=false as | al expandFn |}}
-    {{!-- This line shows the driver title which you don't have to change it --}}
     <div class="over-hr mb-20"><span>{{driverOptionsTitle}}</span></div>
 
-    {{!-- An example input option --}}
-    <div class="row box mt-20">
-      <h4>Instance Options</h4>
+    {{#accordion-list-item
+      title="Rancher VM"
+      detail="Configure where to connect to Rancher VM"
+      expandAll=expandAll
+      expand=(action expandFn)
+      expandOnInit=true
+    }}
       <div class="row">
-        <div class="col span-2 col-inline">
-          <label>CPUs</label>
-        </div>
-
-        <div class="col span-1">
-          {{config.cpuCount}}
-        </div>
-        <div class="col span-3">
-          {{input-slider value=config.cpuCount valueMin=1 valueMax=32}}
-        </div>
-
-        <div class="col span-2 col-inline">
-          <label>Memory Size</label>
-        </div>
-        <div class="col span-4">
+        <div class="col span-12">
+          <label class="acc-label">Rancher VM Endpoint{{field-required}}</label>
           <div class="input-group">
-            {{input-integer min=1 value=config.memorySize classNames="form-control"}}
-            <div class="input-group-addon bg-default">MB</div>
+            {{input type="text" class="form-control" value=config.endpoint placeholder="https://ranchervm.example.com"}}
+            <div class="input-group-addon bg-default">
+              <label class="acc-label">Insecure SSL</label>
+              {{input type="checkbox" class="form-control" name="config.insecureSkipVerify" checked=config.insecureSkipVerify}}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      <div class="row">
+        <div class="col span-6">
+          <label class="acc-label">Rancher Access Key{{field-required}}</label>
+          {{input type="text" value=config.accessKey classNames="form-control"}}
+        </div>
+        <div class="col span-6">
+          <label class="acc-label">Rancher Secret Key{{field-required}}</label>
+          {{input type="password" value=config.secretKey classNames="form-control"}}
+        </div>
+      </div>
+    {{/accordion-list-item}}
 
-    {{!-- This following contains the Name, Labels and Engine Options fields --}}
+      {{#accordion-list-item
+        title="Instance"
+        detail="Customize the Rancher VM that will be created"
+        expandAll=expandAll
+        expand=(action expandFn)
+        expandOnInit=true
+      }}
+        <div class="row">
+          <div class="col span-6">
+            <label class="acc-label">CPUs</label>
+            <div class="input-group">
+              {{input-integer min=1 value=config.cpuCount classNames="form-control"}}
+              <div class="input-group-addon bg-default">Cores</div>
+            </div>
+          </div>
+          <div class="col span-6">
+            <label class="acc-label">Memory</label>
+            <div class="input-group">
+              {{input-integer min=1 value=config.memoryMib classNames="form-control"}}
+              <div class="input-group-addon bg-default">MB</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col span-6">
+            <label class="acc-label">Image</label>
+            <div class="input-group">
+              {{input type="text" value=config.image classNames="form-control"}}
+              <div class="input-group-addon bg-default">
+                <label class="acc-label">NoVNC</label>
+                {{input type="checkbox" class="form-control" name="config.novnc" checked=config.novnc}}
+              </div>
+            </div>
+          </div>
+          <div class="col span-6">
+            <label class="acc-label">SSH User</label>
+            {{input type="text" value=config.sshUser classNames="form-control"}}
+          </div>
+        </div>
+      {{/accordion-list-item}}
+
+      {{#accordion-list-item
+        title="Advanced Configuration"
+        detail="Configure advanced options for the instance"
+        expandAll=expandAll
+        expand=(action expandFn)
+        expandOnInit=false
+      }}
+        <div class="row">
+          <div class="col span-6">
+            <label class="acc-label">Rancher VM Node</label>
+            {{input type="text" value=config.nodeName classNames="form-control"}}
+          </div>
+        </div>
+      {{/accordion-list-item}}
+
     <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>
 
     {{form-name-description
@@ -51,9 +109,7 @@
     }}
   {{/accordion-list}}
 
-  {{!-- This component shows errors produced by validate() in the component --}}
   {{top-errors errors=errors}}
 
-  {{!-- This component shows the Create and Cancel buttons --}}
   {{save-cancel save="save" cancel="cancel"}}
 </section>
